@@ -80,7 +80,7 @@ java Node 3
 
 หากมีคำถามหรือข้อเสนอแนะ ติดต่อได้ที่
 
-- Email: your.email@example.com  
+- Email: chonlatreeketkorwoingwork@gmail.com
 - GitHub: https://github.com/yourusername/pubsub-node-boss-election
 
 ---
