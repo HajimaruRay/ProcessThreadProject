@@ -26,16 +26,22 @@
 
 ## วิธีใช้งาน
 
-1. คอมไพล์โปรเจกต์ 
+1. คอมไพล์โปรเจกต์
+```bash
 javac PubSub.java Node.java Message.java
+```
 
-2. รัน PubSub Broker  
+3. รัน PubSub Broker
+```bash
 java PubSub
+```
 
-3. เปิดเทอร์มินอลใหม่และรัน Node แต่ละตัว (3 Process)  
+5. เปิดเทอร์มินอลใหม่และรัน Node แต่ละตัว (3 Process)
+```bash
 java Node 1
 java Node 2
 java Node 3
+```
 
 *หมายเหตุ:* `1`, `2`, `3` คือหมายเลข ID ของแต่ละ Node
 
