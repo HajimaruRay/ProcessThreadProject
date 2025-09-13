@@ -55,25 +55,19 @@ public class Node {
                     log("[Node "+ id +" ] [RULE: " + role + " ] Received heartbeat from [Node "+ senderId +" ] (PID " + senderPid + " )");
                 }
                 
-                if (msg.type.equals("newBoss")){
+                if (msg.type.equals("newBoss")) {
                     String[] parts = msg.content.split(":");
                     int newBossId = Integer.parseInt(parts[0]);
                     long newBossPid = Long.parseLong(parts[1]);
-
-
-                    if (newBossPid > bossPid){
-                        bossId = newBossId;
-                        bossPid = newBossPid;
-                        log(""+ bossPid);
-                        if (id == bossId){
-                            role = "Boss";
-                        } else{
-                            role = "Slave";
-                        }
-
-                        log("[Node "+ id +" ] [RULE: " + role + " ] I am now a " + role);
-                        log("[Node "+ id +" ] [RULE: " + role + " ] New boss selected: [Node "+ bossId +" ] (PID " + bossPid + " )");
+                    if (pid == newBossPid) {
+                        role = "Boss";
+                    } else {
+                        role = "Slave";
                     }
+
+                    log("[Node " + id + " ] [RULE: " + role + " ] I am now a " + role);
+                    log("[Node " + id + " ] [RULE: " + role + " ] New boss selected: [Node " + newBossId + " ] (PID "
+                            + newBossPid + " )");
                 }
             }
         } catch (EOFException e) {
@@ -105,6 +99,7 @@ public class Node {
                         Message msg = new Message(id, "newBoss", content);
                         out.writeObject(msg);
                         out.flush();
+                        log("[Node "+ id +" ] [RULE: " + role + " ] Sent request to be new Boss");
                     }
                 }
             } catch (Exception ignored) {} // ไม่ทำอะไรหากเกิดข้อผิดพลาด
