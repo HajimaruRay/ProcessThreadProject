@@ -10,8 +10,8 @@ public class Node {
     private static int bossId = -1;   // ID ของ Boss node ปัจจุบัน (-1 หมายถึงยังไม่มี)
     private static long bossPid = -1; // PID ของ Boss node ปัจจุบัน
     private static String role = "Unknown"; // สถานะของ node นี้ (Boss หรือ Slave)
-    private static final String HOST = "localhost"; // Host ของ PubSub broker
-    private static final int PORT = 6000;           // Port ของ PubSub broker
+    private static final String HOST = "localhost"; // Host ของ Broker broker
+    private static final int PORT = 6000;           // Port ของ Broker broker
     private static long lastBossHeartbeat = System.currentTimeMillis(); // เวลา heartbeat ล่าสุดจาก Boss
 
     public static void log(String message) {
@@ -35,12 +35,12 @@ public class Node {
         }
     }
 
-    public void ReceiveMSGFromPubSub(ObjectInputStream in, ObjectOutputStream out){
+    public void ReceiveMSGFromBroker(ObjectInputStream in, ObjectOutputStream out){
         try{
             while(true){
                 Message msg = (Message) in.readObject();
 
-                // รับ Message จาก HeartBeatที่ถูกส่งมาจากPubSub
+                // รับ Message จาก HeartBeatที่ถูกส่งมาจากBroker
                 if (msg.type.equals("heartbeat")){
                     String[] parts = msg.content.split(":");
                     // log(msg.content);
@@ -71,7 +71,7 @@ public class Node {
                 }
             }
         } catch (EOFException e) {
-            // เมื่อเชื่อมต่อกับ PubSub ถูกปิด
+            // เมื่อเชื่อมต่อกับ Broker ถูกปิด
             log("[Node "+ id +" ] [RULE: " + role + " ] Connection closed by broker.");
         } catch (Exception e) {
             // ข้อผิดพลาดอื่นๆ ขณะรับข้อความ
@@ -118,19 +118,19 @@ public class Node {
         pid = ProcessHandle.current().pid();    // ดึงค่า PID ของ process ปัจจุบัน
         Node node = new Node();
 
-        Socket socket = new Socket(HOST,PORT);  // เชื่อมต่อ PubSub
+        Socket socket = new Socket(HOST,PORT);  // เชื่อมต่อ Broker
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());  // stream สำหรับส่งข้อมูล
         out.flush();    // กัน deadlock
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());      // stream สำหรับรับข้อมูล
 
-        log("[Node " + id + " ] (PID " + pid + " ) connected to PubSub Broker");
+        log("[Node " + id + " ] (PID " + pid + " ) connected to Broker Broker");
 
         new Thread(() ->{
             node.Heartbeat(in, out);
         }).start();
 
         new Thread(() ->{
-            node.ReceiveMSGFromPubSub(in, out);
+            node.ReceiveMSGFromBroker(in, out);
         }).start();
 
         new Thread(() ->{
