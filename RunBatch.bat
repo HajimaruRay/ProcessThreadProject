@@ -13,7 +13,7 @@ if errorlevel 1 (
 echo.
 echo Starting PubSub and Nodes...
 
-start "PubSub" cmd /k "java PubSub"
+start "Broker" cmd /k "java Broker"
 
 timeout /t 1 >nul
 
